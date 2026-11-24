@@ -52,6 +52,10 @@ for offer in all_offers:
     if retail < calculated:
         retail += Decimal("10")
 
+    # Remove group_id so Prom.ua imports each offer as an independent product,
+    # without grouping size/color variants.
+    offer.attrib.pop("group_id", None)
+
     # Prefix every supplier offer ID with "g" to avoid collisions with other feeds.
     original_id = offer.get("id")
     if not original_id:
@@ -86,4 +90,5 @@ print(
     f"pricedrop converted to retail with 40% margin and upward rounding to ...9; "
     f"{datetime.now(timezone.utc).isoformat()}"
 )
+
 
