@@ -52,6 +52,13 @@ for offer in all_offers:
     if retail < calculated:
         retail += Decimal("10")
 
+    # Prefix every supplier offer ID with "g" to avoid collisions with other feeds.
+    original_id = offer.get("id")
+    if not original_id:
+        raise RuntimeError("A selected offer has no id; refusing to publish an ambiguous feed.")
+    if not original_id.startswith("g"):
+        offer.set("id", "g" + original_id)
+
     price_element = offer.find("price")
     if price_element is None:
         price_element = ET.SubElement(offer, "price")
@@ -79,3 +86,4 @@ print(
     f"pricedrop converted to retail with 40% margin and upward rounding to ...9; "
     f"{datetime.now(timezone.utc).isoformat()}"
 )
+
